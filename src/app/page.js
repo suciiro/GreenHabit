@@ -5,14 +5,14 @@ import Header from "./components/header";
 import WasteBankPage from "../waste-bank/page";
 import HabitChart from "@/habit-chart/page";
 import DailyTracker from "@/tracker/page";
-import WeeklySummary from "@/weekly-summary/page";
+import Summary from "@/weekly-summary/page";
 
 export default function Home() {
   return (
     <div>
        <Header />
        <DailyTracker />
-       <WeeklySummary />
+       <Summary />
        <HabitChart />
        <WasteBankPage />
     </div>

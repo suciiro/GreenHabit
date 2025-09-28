@@ -1,16 +1,40 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 export default function DailyTracker() {
   const today = new Date().toISOString().split("T")[0] // format YYYY-MM-DD
-  const [habits, setHabits] = useState([
-    "Hemat Air",
-    "Pisahkan Sampah",
-    "Tanam Pohon",
-  ])
-  const [tracker, setTracker] = useState({
-    [today]: habits.reduce((acc, h) => ({ ...acc, [h]: false }), {}),
-  })
+
+  const [habits, setHabits] = useState([])
+  const [tracker, setTracker] = useState({})
+
+  // 🔄 Load data dari localStorage saat pertama kali render
+  useEffect(() => {
+    const savedHabits = JSON.parse(localStorage.getItem("habitList")) || [
+      "Bawa Tumbler",
+      "Hemat Listrik",
+      "Transportasi Umum",
+      "Pisahkan Sampah"
+    ]
+    const savedTracker = JSON.parse(localStorage.getItem("habitTracker")) || {}
+
+    // kalau belum ada data untuk hari ini → bikin default false
+    if (!savedTracker[today]) {
+      savedTracker[today] = savedHabits.reduce(
+        (acc, h) => ({ ...acc, [h]: false }),
+        {}
+      )
+    }
+
+    setHabits(savedHabits)
+    setTracker(savedTracker)
+  }, [])
+
+  // 💾 Simpan setiap kali habits atau tracker berubah
+  useEffect(() => {
+    if (habits.length) localStorage.setItem("habitList", JSON.stringify(habits))
+    if (Object.keys(tracker).length)
+      localStorage.setItem("habitTracker", JSON.stringify(tracker))
+  }, [habits, tracker])
 
   // ✅ Toggle checklist
   const toggleHabit = (habit) => {
@@ -86,8 +110,6 @@ export default function DailyTracker() {
           ))}
         </tbody>
       </table>
-
-     
     </div>
   )
 }

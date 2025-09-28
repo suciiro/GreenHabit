@@ -1,44 +1,79 @@
 "use client"
 import { useState, useEffect } from "react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts"
 
-export default function HabitChart({ tracker }) {
+export default function HabitChart() {
   const [chartData, setChartData] = useState([])
 
-  useEffect(() => {
-    if (!tracker) return
+  // Nilai impact masing-masing habit
+  const IMPACT = {
+    "Bawa Botol Minum": 0.5,      // kg plastik dihemat
+    "Naik Sepeda": 2.0,           // kg CO2 dihemat
+    "Kurangi Kantong Plastik": 0.3,
+    "Matikan Lampu": 1.0,
+  }
 
-    // hitung total aksi per minggu
-    const weeks = [1, 2, 3, 4]
-    const weeklyData = weeks.map((week) => {
-      let total = 0
-      Object.values(tracker).forEach((habit) => {
-        Object.keys(habit).forEach((day) => {
-          if (habit[day]) {
-            const d = parseInt(day)
-            if (d >= (week - 1) * 7 + 1 && d <= week * 7) {
-              total++
-            }
-          }
-        })
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("habitTracker")) || {}
+
+    // Hitung total dampak per minggu
+    const summary = {}
+    Object.keys(saved).forEach((dateStr) => {
+      const date = new Date(dateStr)
+      const weekNum = getWeekNumber(date)
+      const weekKey = `Minggu ${weekNum}`
+
+      let totalImpact = 0
+      Object.entries(saved[dateStr]).forEach(([habit, done]) => {
+        if (done) {
+          totalImpact += IMPACT[habit] || 0
+        }
       })
-      return { week: `Minggu ${week}`, aksi: total }
+
+      if (!summary[weekKey]) summary[weekKey] = 0
+      summary[weekKey] += totalImpact
     })
 
-    setChartData(weeklyData)
-  }, [tracker])
+    // Ubah jadi array untuk chart
+    const data = Object.entries(summary).map(([week, impact]) => ({
+      week,
+      impact: parseFloat(impact.toFixed(2)),
+    }))
+
+    setChartData(data)
+  }, [])
+
+  // Fungsi cari nomor minggu
+  const getWeekNumber = (d) => {
+    const onejan = new Date(d.getFullYear(), 0, 1)
+    const millisecsInDay = 86400000
+    return Math.ceil(
+      ((d - onejan) / millisecsInDay + onejan.getDay() + 1) / 7
+    )
+  }
 
   return (
     <div className="mt-6">
-      <h3 className="text-xl font-bold mb-2">📊 Rekap Aksi Lingkungan</h3>
-      <BarChart width={500} height={300} data={chartData}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="week" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="aksi" fill="#4ade80" />
-      </BarChart>
+      <h3 className="text-xl font-bold mb-2">🌍 Rekap Dampak Lingkungan</h3>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="week" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="impact" fill="#16a34a" name="Kg Dampak Positif" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   )
 }
