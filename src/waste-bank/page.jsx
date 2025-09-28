@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
+// Import FontAwesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import ReactDOMServer from 'react-dom/server'
+
 export default function WasteBankPage() {
   const [filter, setFilter] = useState('all')
   const [dataBankSampah, setDataBankSampah] = useState([])
@@ -41,7 +46,18 @@ export default function WasteBankPage() {
     )
 
     const newMarkers = filtered.map((item) => {
-      const marker = L.marker([item.lat, item.lng]).addTo(map)
+      // Custom icon pakai FontAwesome
+      const locationIcon = L.divIcon({
+        html: ReactDOMServer.renderToString(
+          <FontAwesomeIcon icon={faLocationDot} size="2x" color="green" />
+        ),
+        className: '', // biar nggak ada default style Leaflet
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -32],
+      })
+
+      const marker = L.marker([item.lat, item.lng], { icon: locationIcon }).addTo(map)
       marker.bindPopup(
         `<b>${item.nama}</b><br>Jenis: ${item.jenis}<br>Alamat: ${item.alamat}<br>
          <a href="${item.map}" target="_blank">Lihat di Maps</a>`
