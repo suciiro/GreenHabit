@@ -1,72 +1,29 @@
+// src/waste-bank/page.jsx
 'use client'
 
-import { useEffect, useState } from 'react'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
+import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic' // PENTING untuk impor komponen client-only
 
-// Import FontAwesome
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
-import ReactDOMServer from 'react-dom/server'
+// Gunakan next/dynamic untuk impor MapContainer.jsx
+// ssr: false memastikan kode Leaflet tidak pernah dijalankan di server.
+const DynamicMapContainer = dynamic(
+  () => import('../components/map-container'), 
+  {
+    loading: () => <p className="text-center text-slate-500">Memuat peta...</p>,
+    ssr: false // HINDARI SSR (Server-Side Rendering)
+  }
+)
 
 export default function WasteBankPage() {
   const [filter, setFilter] = useState('all')
   const [dataBankSampah, setDataBankSampah] = useState([])
-  const [map, setMap] = useState(null)
-  const [markers, setMarkers] = useState([])
 
-  // Inisialisasi peta
+  // Fetch data bank sampah (Bisa tetap di sini atau dipindah ke MapContainer, tapi di sini lebih bersih)
   useEffect(() => {
-    const mapInstance = L.map('map').setView([-6.2, 106.816], 6)
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(mapInstance)
-
-    setMap(mapInstance)
-
     fetch('/waste-bank.json')
       .then((res) => res.json())
       .then((data) => setDataBankSampah(data))
-
-    return () => {
-      mapInstance.remove()
-    }
-  }, [])
-
-  // Update marker saat filter berubah
-  useEffect(() => {
-    if (!map) return
-
-    // Hapus marker lama
-    markers.forEach((m) => map.removeLayer(m))
-
-    const filtered = dataBankSampah.filter((item) =>
-      filter === 'all' ? true : item.jenis === filter
-    )
-
-    const newMarkers = filtered.map((item) => {
-      // Custom icon pakai FontAwesome
-      const locationIcon = L.divIcon({
-        html: ReactDOMServer.renderToString(
-          <FontAwesomeIcon icon={faLocationDot} size="2x" color="green" />
-        ),
-        className: '', // biar nggak ada default style Leaflet
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -32],
-      })
-
-      const marker = L.marker([item.lat, item.lng], { icon: locationIcon }).addTo(map)
-      marker.bindPopup(
-        `<b>${item.nama}</b><br>Jenis: ${item.jenis}<br>Alamat: ${item.alamat}<br>
-         <a href="${item.map}" target="_blank">Lihat di Maps</a>`
-      )
-      return marker
-    })
-
-    setMarkers(newMarkers)
-  }, [filter, dataBankSampah, map])
+  }, []) // Hanya dijalankan sekali
 
   return (
     <main className="flex-1 mb-12 mt-24">
@@ -80,7 +37,7 @@ export default function WasteBankPage() {
           id="filter"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="border border-slate-300 bg-white text-slate-800 rounded-md px-4 py-2 shadow-sm"
+          className="border border-gray-200 bg-white text-slate-800 rounded-md px-4 py-2 shadow-sm ml-3"
         >
           <option value="all">Semua</option>
           <option value="organik">Organik</option>
@@ -89,9 +46,10 @@ export default function WasteBankPage() {
       </div>
 
       <div className="flex justify-center mt-6">
-        <div
-          id="map"
-          className="md:w-[60%] w-[90%] h-[350px] rounded-lg shadow z-0"
+        {/* Gunakan komponen peta dinamis di sini */}
+        <DynamicMapContainer 
+          filter={filter} 
+          dataBankSampah={dataBankSampah} 
         />
       </div>
     </main>

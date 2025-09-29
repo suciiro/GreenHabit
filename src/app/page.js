@@ -1,11 +1,12 @@
 'use client'
 
 import Image from "next/image";
-import Header from "./components/header";
+import Header from "../components/header";
 import WasteBankPage from "../waste-bank/page";
 import HabitChart from "@/habit-chart/page";
 import DailyTracker from "@/tracker/page";
 import Summary from "@/weekly-summary/page";
+import Leaderboard from "@/leaderboard/page";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
        <DailyTracker />
        <Summary />
        <HabitChart />
+       <Leaderboard />
        <WasteBankPage />
     </div>
     

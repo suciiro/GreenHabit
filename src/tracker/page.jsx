@@ -1,33 +1,75 @@
 "use client"
 import { useState, useEffect } from "react"
 
+// Data Kebiasaan dan Dampak Kuantitatif
+const initialHabitData = [
+  {
+    aksi: "Bawa Botol Minum",
+    dampak: "Hemat ≈ 1-2 botol plastik/hari",
+  },
+  {
+    aksi: "Bawa Kantong Belanja",
+    dampak: "Hemat ≈ 0,5 kantong plastik/hari",
+  },
+  {
+    aksi: "Transportasi Umum",
+    dampak: "Potong emisi hingga 90% (vs mobil)",
+  },
+  {
+    aksi: "Pisahkan Sampah",
+    dampak: "Cegah metana, gas 25x CO₂",
+  },
+  {
+    aksi: "Kompos Dapur",
+    dampak: "Kurangi ≈ 0,5 kg sampah TPA/hari",
+  },
+  {
+    aksi: "Manfaatkan Air Bekas",
+    dampak: "Daur ulang ≈ 10-20 liter air",
+  },
+  {
+    aksi: "Hemat Air", 
+    dampak: "Hemat 4 liter air/menit",
+  },
+  {
+    aksi: "Cabut Charger",
+    dampak: "Potong ≈ 10% 'listrik hantu'",
+  },
+  {
+    aksi: "Hemat Listrik", 
+    dampak: "Kurangi ≈ 0,2-1 kg CO₂/hari",
+  },
+  {
+    aksi: "Tanam Pohon",
+    dampak: "Serap ≈ 60 gram CO₂/hari (dewasa)",
+  },
+];
+
+
 export default function DailyTracker() {
   const today = new Date().toISOString().split("T")[0] // format YYYY-MM-DD
 
-  const [habits, setHabits] = useState([])
+  // habits kini menyimpan array of objects: [{aksi: string, dampak: string}]
+  const [habits, setHabits] = useState([]) 
   const [tracker, setTracker] = useState({})
 
   // 🔄 Load data dari localStorage saat pertama kali render
   useEffect(() => {
-    const savedHabits = JSON.parse(localStorage.getItem("habitList")) || [
-      "Bawa Tumbler",
-      "Hemat Listrik",
-      "Transportasi Umum",
-      "Pisahkan Sampah"
-    ]
-    const savedTracker = JSON.parse(localStorage.getItem("habitTracker")) || {}
+    const savedHabits = JSON.parse(localStorage.getItem("habitList")) || initialHabitData;
+    const savedTracker = JSON.parse(localStorage.getItem("habitTracker")) || {};
 
-    // kalau belum ada data untuk hari ini → bikin default false
+    const habitNames = savedHabits.map(h => h.aksi);
+
     if (!savedTracker[today]) {
-      savedTracker[today] = savedHabits.reduce(
-        (acc, h) => ({ ...acc, [h]: false }),
+      savedTracker[today] = habitNames.reduce(
+        (acc, name) => ({ ...acc, [name]: false }),
         {}
-      )
+      );
     }
 
-    setHabits(savedHabits)
-    setTracker(savedTracker)
-  }, [])
+    setHabits(savedHabits);
+    setTracker(savedTracker);
+  }, []);
 
   // 💾 Simpan setiap kali habits atau tracker berubah
   useEffect(() => {
@@ -37,79 +79,125 @@ export default function DailyTracker() {
   }, [habits, tracker])
 
   // ✅ Toggle checklist
-  const toggleHabit = (habit) => {
+  const toggleHabit = (habitName) => {
     setTracker((prev) => ({
       ...prev,
       [today]: {
         ...prev[today],
-        [habit]: !prev[today][habit],
+        [habitName]: !prev[today][habitName],
       },
     }))
   }
 
-  // ➕ Tambah habit baru
+  // ➕ Tambah habit baru (Meminta Aksi DAN Dampak)
   const addHabit = () => {
-    const newHabit = prompt("Masukkan nama habit baru:")
-    if (!newHabit) return
-    setHabits((prev) => [...prev, newHabit])
+    const newAksi = prompt("Masukkan nama kebiasaan baru (Contoh: Bawa Bekal):");
+    if (!newAksi || habits.some(h => h.aksi === newAksi)) return;
+    
+    const newDampak = prompt(`Masukkan dampak terukur untuk: ${newAksi} (Contoh: Hemat 1 kemasan/hari):`);
+    if (!newDampak) return;
+
+    const newHabitObject = { aksi: newAksi, dampak: newDampak };
+
+    setHabits((prev) => [...prev, newHabitObject]);
+
     setTracker((prev) => ({
       ...prev,
-      [today]: { ...prev[today], [newHabit]: false },
-    }))
+      [today]: { ...prev[today], [newAksi]: false },
+    }));
   }
 
   // ❌ Hapus habit
-  const removeHabit = (habit) => {
-    setHabits((prev) => prev.filter((h) => h !== habit))
+  const removeHabit = (habitName) => {
+    if (!window.confirm(`Yakin ingin menghapus kebiasaan "${habitName}"?`)) return
+    
+    setHabits((prev) => prev.filter((h) => h.aksi !== habitName))
+    
     setTracker((prev) => {
-      const updated = { ...prev[today] }
-      delete updated[habit]
-      return { ...prev, [today]: updated }
+        const updatedTracker = { ...prev };
+        for (const date in updatedTracker) {
+            if (updatedTracker[date].hasOwnProperty(habitName)) {
+                delete updatedTracker[date][habitName];
+            }
+        }
+        return updatedTracker;
     })
   }
 
+  // Fungsi utilitas untuk mendapatkan dampak dari habit
+  const getDampak = (habitName) => {
+      const data = habits.find(item => item.aksi === habitName);
+      return data ? data.dampak : "Dampak belum terdata (diperlukan reload).";
+  }
+
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">🌱 Daily Tracker ({today})</h2>
+    <div className="p-4 max-w-lg mx-auto"> 
+      <h2 className="text-2xl font-bold mb-4 text-center">
+        🌱 Daily Tracker ({today})
+      </h2>
+      
       <button
         onClick={addHabit}
-        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="w-full mb-6 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 shadow-md transition-colors"
       >
-        ➕ Tambah Habit
+        ➕ Tambah Kebiasaan Baru
       </button>
 
-      <table className="w-full border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">Aksi</th>
-            <th className="p-2 border">Checklist</th>
-            <th className="p-2 border">Hapus</th>
-          </tr>
-        </thead>
-        <tbody>
-          {habits.map((habit, idx) => (
-            <tr key={idx} className="text-center">
-              <td className="border p-2">{habit}</td>
-              <td className="border p-2">
-                <input
-                  type="checkbox"
-                  checked={tracker[today]?.[habit] || false}
-                  onChange={() => toggleHabit(habit)}
-                  className="w-5 h-5 accent-green-500"
-                />
-              </td>
-              <td className="border p-2">
-                <button
-                  onClick={() => removeHabit(habit)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  ❌
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* Kontainer baru untuk list kebiasaan, menggantikan <table> */}
+      <div className="space-y-3">
+        {habits.map((habit) => (
+          <div 
+            key={habit.aksi} 
+            className="p-3 border border-gray-200 rounded-xl shadow-sm flex items-center justify-between bg-white transition-shadow duration-200 hover:shadow-lg"
+          >
+            
+            {/* KIRI: Aksi & Dampak */}
+            <div className="flex-grow min-w-0 pr-4">
+              <div className="font-semibold text-base text-gray-800">
+                {habit.aksi}
+              </div>
+              <div className="text-xs text-gray-500 mt-1 leading-tight">
+                {getDampak(habit.aksi)}
+              </div>
+            </div>
+            
+            {/* KANAN: Kontrol (Checklist & Hapus) */}
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              
+              {/* Checklist */}
+              <button
+                onClick={() => toggleHabit(habit.aksi)}
+                className={`w-7 h-7 min-w-7 min-h-7 flex items-center justify-center rounded-md border-2 transition-colors duration-150
+                  ${tracker[today]?.[habit.aksi] ? "bg-green-500 border-green-500" : "bg-white border-gray-300"}
+                  shadow-inner cursor-pointer`}
+                aria-label={`Selesaikan ${habit.aksi}`}
+                type="button"
+              >
+                {tracker[today]?.[habit.aksi] && (
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Hapus */}
+              <button
+                onClick={() => removeHabit(habit.aksi)}
+                 className="text-gray-500 text-sm hover:text-gray-700 p-1 transition-colors"
+                aria-label={`Hapus kebiasaan ${habit.aksi}`}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
