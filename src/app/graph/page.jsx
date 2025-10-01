@@ -1,4 +1,5 @@
 "use client"
+import Header from "@/components/header"
 import { useState, useEffect } from "react"
 import {
   BarChart,
@@ -133,39 +134,44 @@ export default function HabitChart() {
 
 
   return (
-    // Kontainer utama diatur agar terpusat dan memiliki lebar maksimal
-    <div className="mt-6 p-4 max-w-lg mx-auto"> 
-      <div className="p-4 border border-gray-200 rounded-xl shadow-lg bg-white">
-        <h3 className="text-xl font-bold mb-4 text-center text-green-700">📈 Rekap Dampak Lingkungan</h3>
-        
-        {/* Tombol Pilihan Periode */}
-        <div className="mb-4 flex flex-wrap justify-center gap-2"> 
-          <button
-            onClick={() => setPeriod('mingguan')}
-            className={`px-3 py-1 text-sm rounded transition-colors ${
-              period === 'mingguan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
-            }`}
-          >
-            Per Minggu
-          </button>
-          <button
-            onClick={() => setPeriod('bulanan')}
-            className={`px-3 py-1 text-sm rounded transition-colors ${
-              period === 'bulanan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
-            }`}
-          >
-            Per Bulan
-          </button>
-          <button
-            onClick={() => setPeriod('akumulasi')}
-            className={`px-3 py-1 text-sm rounded transition-colors ${
-              period === 'akumulasi' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
-            }`}
-          >
-            Total Akumulasi
-          </button>
-        </div>
+  <div>
+    <Header />
 
+    
+    <div className="mt-6 p-4 max-w-lg mx-auto"> 
+      
+      {/* Judul di luar card */}
+      <h3 className="text-2xl font-bold mb-4 text-center">
+        Rekap Dampak Lingkungan
+      </h3>
+      {/* Filter periode di luar card */}
+      <div className="mb-4 flex flex-wrap justify-center gap-2"> 
+        <button
+          onClick={() => setPeriod('mingguan')}
+          className={`px-3 py-1 text-sm rounded transition-colors ${
+            period === 'mingguan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
+          }`}
+        >
+          Per Minggu
+        </button>
+        <button
+          onClick={() => setPeriod('bulanan')}
+          className={`px-3 py-1 text-sm rounded transition-colors ${
+            period === 'bulanan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
+          }`}
+        >
+          Per Bulan
+        </button>
+        <button
+          onClick={() => setPeriod('akumulasi')}
+          className={`px-3 py-1 text-sm rounded transition-colors ${
+            period === 'akumulasi' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
+          }`}
+        >
+          Total Akumulasi
+        </button>
+      </div>
+      <div className="p-4 border border-gray-200 rounded-xl shadow-lg bg-white">
         {/* ResponsiveContainer memastikan grafik mengisi lebar 100% dari parent */}
         <ResponsiveContainer width="100%" height={300}>
           {/* Margin disesuaikan agar YAxis tidak terpotong di mobile */}
@@ -192,15 +198,17 @@ export default function HabitChart() {
             />
             <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ padding: '0 0 5px 0', fontSize: '12px' }} />
 
-            <Bar dataKey="co2e" fill="#34d399" name="Kg CO₂ Ekuivalen Dihemat" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="waste" fill="#a3e635" name="Kg Sampah Padat Dihindari" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="water" fill="#60a5fa" name="Liter Air Dihemat" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="co2e" fill="#34d399" name="CO₂ Ekuivalen Dihemat" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="waste" fill="#a3e635" name="Sampah Padat Dihindari" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="water" fill="#60a5fa" name="Air Dihemat" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
         <p className="mt-3 text-sm text-gray-500 text-center">
-            *Grafik menampilkan total akumulasi dampak per **{period.replace('mingguan', 'minggu').replace('bulanan', 'bulan').replace('akumulasi', 'seluruh waktu')}**.
+            *Grafik menampilkan total akumulasi dampak per {period.replace('mingguan', 'minggu').replace('bulanan', 'bulan').replace('akumulasi', 'seluruh waktu')}
         </p>
       </div>
     </div>
+    </div>
   )
+  
 }

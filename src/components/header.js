@@ -20,11 +20,11 @@ export default function Header () {
           <nav className="hidden md:block">
             <ul className="flex items-center gap-6">
               <li><Link href="/">Home</Link></li>
-              <li><Link href="/overview">Overview</Link></li>
-              <li><Link href="/tips-and-trick">Tips & Trick</Link></li>
+              <li><Link href="/tracker">Tracker</Link></li>
+              <li><Link href="/summary">Summary</Link></li>
+              <li><Link href="/graph">Graph</Link></li>
+              <li><Link href="/leaderboard">Leaderboard</Link></li>
               <li><Link href="/waste-bank">Waste Bank</Link></li>
-              <li><Link href="/contact-us">Contact Us</Link></li>
-              <li><Link href="/game" className="cta cta-sm">Game</Link></li>
             </ul>
           </nav>
           <button

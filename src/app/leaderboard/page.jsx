@@ -1,4 +1,5 @@
 "use client"
+import Header from '@/components/header'
 import { useState, useEffect, useCallback } from 'react'
 
 // --- KONSTANTA DARI HABITCHART (untuk konsistensi perhitungan) ---
@@ -47,7 +48,8 @@ export default function Leaderboard() {
     const [leaderboardData, setLeaderboardData] = useState([])
     const localUserNickname = "Anda (Lokal)"
 
-    // Fungsi inti untuk menghitung total akumulasi dampak pengguna lokal dari localStorage
+    // Sinkronisasi data leaderboard dari graph (habit-chart)
+    // Ambil data dari localStorage "habitTracker" dan hitung total dampak dengan IMPACT_METRICS & WEIGHTS yang sama
     const calculateLocalUserImpact = useCallback(() => {
         const saved = JSON.parse(localStorage.getItem("habitTracker")) || {}
         let totalCO2e = 0
@@ -111,12 +113,14 @@ export default function Leaderboard() {
     }
 
     return (
+    <div>
+        <Header />
         <div className="p-4 max-w-lg mx-auto">
-            <h2 className="text-3xl font-bold mb-3 text-center text-green-700">
-                🏆 Papan Skor Dampak
+            <h2 className="text-2xl font-bold mb-4 text-center">
+                Papan Skor Dampak
             </h2>
-            <p className="text-center text-sm text-gray-500 mb-6">
-                Skor total dihitung: (CO2 x {WEIGHTS.CO2}) + (Sampah x {WEIGHTS.SAMPAH}) + (Air x {WEIGHTS.AIR})
+            <p className="text-center text-sm text-green-600 mb-6">
+                Skor total dihitung: (CO₂ x {WEIGHTS.CO2}) + (Sampah x {WEIGHTS.SAMPAH}) + (Air x {WEIGHTS.AIR})
             </p>
 
             <div className="space-y-3">
@@ -137,7 +141,7 @@ export default function Leaderboard() {
                             <div className="flex-1 min-w-0 px-4">
                                 <p className="font-semibold text-gray-800 truncate">{entry.nickname}</p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    CO2: {entry.co2} Kg | Sampah: {entry.sampah} Kg | Air: {entry.air} Liter
+                                    CO₂: {entry.co2} Kg | Sampah: {entry.sampah} Kg | Air: {entry.air} Liter
                                 </p>
                             </div>
 
@@ -152,6 +156,7 @@ export default function Leaderboard() {
                     )
                 })}
             </div>
+        </div>
         </div>
     )
 }

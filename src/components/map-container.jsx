@@ -81,7 +81,7 @@ export default function MapContainer({ filter, dataBankSampah }) {
   return (
     <div
       id="map-id" // ID unik untuk container peta
-      className="md:w-[60%] w-[90%] h-[350px] rounded-lg shadow z-0"
+      className="md:w-[100%] w-[100%] h-[350px] rounded-lg shadow z-0"
     />
   )
 }
