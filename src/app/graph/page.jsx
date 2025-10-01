@@ -1,6 +1,7 @@
 // HabitChart.js
 "use client"
 import Background from "@/components/background"
+import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { useState, useEffect } from "react"
 import {
@@ -139,6 +140,7 @@ export default function HabitChart() {
     <div>
       <Header />
       <Background />
+      <Footer />
 
       {/* Perubahan pada div ini: Menambahkan md:max-w-6xl untuk lebar desktop */}
       <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">

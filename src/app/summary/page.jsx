@@ -1,6 +1,7 @@
 // Summary.jsx
 "use client"
 import Background from "@/components/background"
+import Footer from "@/components/footer"
 import Header from "@/components/header"
 import { useState, useEffect } from "react"
 
@@ -128,6 +129,7 @@ export default function Summary() {
     <div>
       <Header />
       <Background />
+      <Footer />
       <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
         <h2 className="text-2xl font-bold mb-4 text-center">
           Ringkasan {viewMode === "weekly" ? "Mingguan" : "Bulanan"}

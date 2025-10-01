@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic' // PENTING untuk impor komponen client-only
 import Header from '@/components/header'
 import Background from '@/components/background'
+import Footer from '@/components/footer'
 
 // Gunakan next/dynamic untuk impor MapContainer.jsx
 // ssr: false memastikan kode Leaflet tidak pernah dijalankan di server.
@@ -31,6 +32,7 @@ export default function WasteBankPage() {
     <div>
       <Header />
       <Background />
+      <Footer />
       {/* Perubahan di sini: max-w-lg untuk mobile, md:max-w-6xl untuk desktop */}
       <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
         <h2 className="text-2xl font-bold mb-4 text-center">

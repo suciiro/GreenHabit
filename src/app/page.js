@@ -1,4 +1,5 @@
 'use client'
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,6 +8,7 @@ export default function HomePage() {
   return (
     <div>
       <Header />
+      <Footer />
       {/* Tambahkan pt-16 agar konten tidak tertutup Header yang fixed */}
       <div className="min-h-screen flex flex-col pt-16">
 

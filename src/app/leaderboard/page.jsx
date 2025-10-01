@@ -1,5 +1,6 @@
 "use client"
 import Background from '@/components/background'
+import Footer from '@/components/footer'
 import Header from '@/components/header'
 import { useState, useEffect, useCallback } from 'react'
 
@@ -117,6 +118,7 @@ export default function Leaderboard() {
     <div>
         <Header />
         <Background />
+        <Footer />
         <div className="mt-18 p-4 max-w-lg mx-auto relative z-10">
             <h2 className="text-2xl font-bold mb-4 text-center">
                 Yuk Jadi yang Teratas!
