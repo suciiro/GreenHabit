@@ -1,4 +1,5 @@
 "use client"
+import Background from "@/components/background";
 import Header from "@/components/header";
 import { useState, useEffect } from "react"
 
@@ -137,9 +138,10 @@ savedTracker = Object.fromEntries(
   return (
   <div>
     <Header />
-    <div className="p-4 max-w-lg mx-auto"> 
+    <Background />
+    <div className="mt-18 p-4 max-w-lg mx-auto relative z-10"> 
       <h2 className="text-2xl font-bold mb-4 text-center">
-         Daily Tracker
+         Lacak Aksi Hijaumu!
       </h2>
       <p className="text-sm text-green-600 mb-6 text-center">{formatTanggal(today)}</p>
       
@@ -147,7 +149,7 @@ savedTracker = Object.fromEntries(
         onClick={addHabit}
         className="w-full mb-6 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 shadow-md transition-colors"
       >
-        <b>+</b> Tambah Rutinitas Baru
+        <b>+</b> Tambah Aksi Baru
       </button>
 
       <div className="space-y-3">
@@ -156,7 +158,7 @@ savedTracker = Object.fromEntries(
           .map((habit) => (
             <div 
               key={habit.aksi} 
-              className="p-3 border border-gray-200 rounded-xl shadow-sm flex items-center justify-between bg-white transition-shadow duration-200 hover:shadow-lg"
+              className="p-3 border border-gray-200 rounded-xl shadow-sm flex items-center justify-between bg-white/90 transition-shadow duration-200 hover:shadow-lg"
             >
               <div className="flex-grow min-w-0 pr-4">
                 <div className="font-semibold text-base text-gray-800">

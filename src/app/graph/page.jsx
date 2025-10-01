@@ -1,4 +1,6 @@
+// HabitChart.js
 "use client"
+import Background from "@/components/background"
 import Header from "@/components/header"
 import { useState, useEffect } from "react"
 import {
@@ -15,7 +17,7 @@ import {
 export default function HabitChart() {
   const [chartData, setChartData] = useState([])
   // State periode baru: 'mingguan', 'bulanan', atau 'akumulasi'
-  const [period, setPeriod] = useState('mingguan') 
+  const [period, setPeriod] = useState('mingguan')
 
   // Nilai dampak terukur per kebiasaan (Kg CO2e, Kg Sampah, Liter Air)
   const IMPACT_METRICS = {
@@ -52,7 +54,7 @@ export default function HabitChart() {
 
     Object.keys(saved).forEach((dateStr) => {
       const date = new Date(dateStr)
-      const periodKey = getPeriodKey(date, period) 
+      const periodKey = getPeriodKey(date, period)
 
       let totalCO2e = 0
       let totalWaste = 0
@@ -80,12 +82,12 @@ export default function HabitChart() {
         period: key,
         co2e: parseFloat(totals.co2e.toFixed(1)),
         waste: parseFloat(totals.waste.toFixed(1)),
-        water: parseFloat(totals.water.toFixed(0)), 
+        water: parseFloat(totals.water.toFixed(0)),
       }))
-      
+
     // Sortir hanya jika bukan mode akumulasi
     if (period !== 'akumulasi') {
-        data = data.sort((a, b) => a.period.localeCompare(b.period));
+      data = data.sort((a, b) => a.period.localeCompare(b.period));
     }
 
     setChartData(data)
@@ -99,116 +101,117 @@ export default function HabitChart() {
     const weekNo = Math.ceil(((date - yearStart) / 86400000 + 1) / 7)
     return weekNo
   }
-  
+
   // Fungsi formatter untuk label XAxis
   const formatXAxisLabel = (key) => {
-      if (!key || typeof key !== "string") return ""; // Hindari error jika key undefined/null
-      if (period === 'mingguan') {
-          const parts = key.split('-');
-          if (parts.length < 2) return key;
-          return parts[1].replace('W', 'Mgg ');
-      } else if (period === 'bulanan') {
-          const parts = key.split('-');
-          if (parts.length < 2) return key;
-          const monthIndex = parseInt(parts[1].replace('M', '')) - 1;
-          const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-          return monthNames[monthIndex] ?? key;
-      }
-      return key; // Tampilkan 'Total Akumulasi'
+    if (!key || typeof key !== "string") return ""; // Hindari error jika key undefined/null
+    if (period === 'mingguan') {
+      const parts = key.split('-');
+      if (parts.length < 2) return key;
+      return parts[1].replace('W', 'Mgg ');
+    } else if (period === 'bulanan') {
+      const parts = key.split('-');
+      if (parts.length < 2) return key;
+      const monthIndex = parseInt(parts[1].replace('M', '')) - 1;
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+      return monthNames[monthIndex] ?? key;
+    }
+    return key; // Tampilkan 'Total Akumulasi'
   };
-  
+
   // Fungsi formatter untuk label Tooltip
   const formatTooltipLabel = (label) => {
     if (period === 'akumulasi') return 'Total Akumulasi Seluruh Waktu';
-      
+
     const parts = label.split('-');
     const year = parts[0];
     if (period === 'mingguan') {
-        return `Periode: ${year} - Minggu ${parts[1].substring(1)}`;
+      return `Periode: ${year} - Minggu ${parts[1].substring(1)}`;
     } else {
-        const monthIndex = parseInt(parts[1].substring(1)) - 1;
-        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        return `Periode: ${monthNames[monthIndex]} ${year}`;
+      const monthIndex = parseInt(parts[1].substring(1)) - 1;
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      return `Periode: ${monthNames[monthIndex]} ${year}`;
     }
   };
 
 
   return (
-  <div>
-    <Header />
+    <div>
+      <Header />
+      <Background />
 
-    
-    <div className="mt-6 p-4 max-w-lg mx-auto"> 
-      
-      {/* Judul di luar card */}
-      <h3 className="text-2xl font-bold mb-4 text-center">
-        Rekap Dampak Lingkungan
-      </h3>
-      {/* Filter periode di luar card */}
-      <div className="mb-4 flex flex-wrap justify-center gap-2"> 
-        <button
-          onClick={() => setPeriod('mingguan')}
-          className={`px-3 py-1 text-sm rounded transition-colors ${
-            period === 'mingguan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
-          }`}
-        >
-          Per Minggu
-        </button>
-        <button
-          onClick={() => setPeriod('bulanan')}
-          className={`px-3 py-1 text-sm rounded transition-colors ${
-            period === 'bulanan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
-          }`}
-        >
-          Per Bulan
-        </button>
-        <button
-          onClick={() => setPeriod('akumulasi')}
-          className={`px-3 py-1 text-sm rounded transition-colors ${
-            period === 'akumulasi' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
-          }`}
-        >
-          Total Akumulasi
-        </button>
-      </div>
-      <div className="p-4 border border-gray-200 rounded-xl shadow-lg bg-white">
-        {/* ResponsiveContainer memastikan grafik mengisi lebar 100% dari parent */}
-        <ResponsiveContainer width="100%" height={300}>
-          {/* Margin disesuaikan agar YAxis tidak terpotong di mobile */}
-          <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}> 
-            <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-            <XAxis
-              dataKey="period" 
-              // Rotasi Sumbu X diset -35 derajat agar label tidak tumpang tindih di mobile
-              angle={period === 'akumulasi' ? 0 : -35} 
-              textAnchor={period === 'akumulasi' ? 'middle' : 'end'} 
-              height={60} // Menambah tinggi untuk menampung label yang dirotasi
-              interval={0}
-              tickFormatter={formatXAxisLabel} 
-              style={{ fontSize: '10px' }} // Ukuran font diperkecil
-            />
-            {/* Label YAxis dipindahkan ke tengah agar tidak memakan margin horizontal terlalu banyak */}
-            <YAxis label={{ value: 'Unit Dampak', angle: -90, position: 'center', fill: '#555', dx: -5, style: { fontSize: '10px' } }} /> 
-            <Tooltip
-              formatter={(value, name) => {
+      {/* Perubahan pada div ini: Menambahkan md:max-w-6xl untuk lebar desktop */}
+      <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
+
+        {/* Judul di luar card */}
+        <h3 className="text-2xl font-bold mb-4 text-center">
+          Grafik Dampak Lingkungan
+        </h3>
+        {/* Filter periode di luar card */}
+        <div className="mb-4 flex flex-wrap justify-center gap-2">
+          <button
+            onClick={() => setPeriod('mingguan')}
+            className={`px-3 py-1 text-sm rounded transition-colors ${
+              period === 'mingguan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
+            }`}
+          >
+            Per Minggu
+          </button>
+          <button
+            onClick={() => setPeriod('bulanan')}
+            className={`px-3 py-1 text-sm rounded transition-colors ${
+              period === 'bulanan' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
+            }`}
+          >
+            Per Bulan
+          </button>
+          <button
+            onClick={() => setPeriod('akumulasi')}
+            className={`px-3 py-1 text-sm rounded transition-colors ${
+              period === 'akumulasi' ? 'bg-green-600 text-white shadow' : 'bg-gray-200 text-gray-700 hover:bg-green-100'
+            }`}
+          >
+            Total Akumulasi
+          </button>
+        </div>
+        <div className="p-4 border border-gray-200 rounded-xl shadow-lg bg-white/90">
+          {/* ResponsiveContainer memastikan grafik mengisi lebar 100% dari parent */}
+          <ResponsiveContainer width="100%" height={300}>
+            {/* Margin disesuaikan agar YAxis tidak terpotong di mobile */}
+            <BarChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
+              <XAxis
+                dataKey="period"
+                // Rotasi Sumbu X diset -35 derajat agar label tidak tumpang tindih di mobile
+                angle={period === 'akumulasi' ? 0 : -35}
+                textAnchor={period === 'akumulasi' ? 'middle' : 'end'}
+                height={60} // Menambah tinggi untuk menampung label yang dirotasi
+                interval={0}
+                tickFormatter={formatXAxisLabel}
+                style={{ fontSize: '10px' }} // Ukuran font diperkecil
+              />
+              {/* Label YAxis dipindahkan ke tengah agar tidak memakan margin horizontal terlalu banyak */}
+              <YAxis label={{ value: 'Unit Dampak', angle: -90, position: 'center', fill: '#555', dx: -5, style: { fontSize: '10px' } }} />
+              <Tooltip
+                formatter={(value, name) => {
                   const unit = name.includes('Air') ? 'Liter' : 'Kg';
                   return [`${value} ${unit}`, name];
-              }}
-              labelFormatter={formatTooltipLabel} 
-            />
-            <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ padding: '0 0 5px 0', fontSize: '12px' }} />
+                }}
+                labelFormatter={formatTooltipLabel}
+              />
+              <Legend layout="horizontal" verticalAlign="bottom" align="center" wrapperStyle={{ padding: '0 0 5px 0', fontSize: '12px' }} />
 
-            <Bar dataKey="co2e" fill="#34d399" name="CO₂ Ekuivalen Dihemat" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="waste" fill="#a3e635" name="Sampah Padat Dihindari" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="water" fill="#60a5fa" name="Air Dihemat" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-        <p className="mt-3 text-sm text-gray-500 text-center">
+              <Bar dataKey="co2e" fill="#34d399" name="CO₂ Ekuivalen Dihemat" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="waste" fill="#a3e635" name="Sampah Padat Dihindari" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="water" fill="#60a5fa" name="Air Dihemat" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <p className="mt-3 text-sm text-gray-500 text-center">
             *Grafik menampilkan total akumulasi dampak per {period.replace('mingguan', 'minggu').replace('bulanan', 'bulan').replace('akumulasi', 'seluruh waktu')}
-        </p>
+          </p>
+        </div>
       </div>
     </div>
-    </div>
   )
-  
+
 }

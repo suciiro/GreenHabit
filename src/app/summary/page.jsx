@@ -1,4 +1,6 @@
+// Summary.jsx
 "use client"
+import Background from "@/components/background"
 import Header from "@/components/header"
 import { useState, useEffect } from "react"
 
@@ -12,18 +14,18 @@ export default function Summary() {
   }, [])
 
   // Hitung persentase keberhasilan
-const getSuccessRate = (days) => {
-  if (habitsList.length === 0 || days.length === 0) return 0
-  let total = 0
-  let success = 0
-  habitsList.forEach((habit) => {
-    days.forEach((day) => {
-      total++
-      if (tracker[day]?.[habit]) success++
+  const getSuccessRate = (days) => {
+    if (habitsList.length === 0 || days.length === 0) return 0
+    let total = 0
+    let success = 0
+    habitsList.forEach((habit) => {
+      days.forEach((day) => {
+        total++
+        if (tracker[day]?.[habit]) success++
+      })
     })
-  })
-  return ((success / total) * 100).toFixed(1) // 1 angka di belakang koma
-}
+    return ((success / total) * 100).toFixed(1) // 1 angka di belakang koma
+  }
 
   // ---------------- HABITS (selalu sinkron dengan tracker) ----------------
   const habits = Object.values(tracker).reduce((acc, day) => {
@@ -110,12 +112,12 @@ const getSuccessRate = (days) => {
         const days = getAllDaysInMonth(year, month)
         return { label: monthLabel, days }
       })
-       .sort((a, b) => {
-      if (a.year === b.year) {
-        return a.month - b.month
-      }
-      return a.year - b.year
-    })
+      .sort((a, b) => {
+        if (a.year === b.year) {
+          return a.month - b.month
+        }
+        return a.year - b.year
+      })
   }
 
   const weeklyData = getWeeklyData()
@@ -125,9 +127,10 @@ const getSuccessRate = (days) => {
   return (
     <div>
       <Header />
-      <div className="p-4 max-w-lg mx-auto">
+      <Background />
+      <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
         <h2 className="text-2xl font-bold mb-4 text-center">
-          Rekap {viewMode === "weekly" ? "Mingguan" : "Bulanan"}
+          Ringkasan {viewMode === "weekly" ? "Mingguan" : "Bulanan"}
         </h2>
 
         {/* Filter Mode */}
@@ -161,11 +164,11 @@ const getSuccessRate = (days) => {
               Belum ada data mingguan yang tercatat.
             </p>
           ) : (
-            <div className="max-w-lg mx-auto space-y-6">
+            <div className="space-y-6">
               {weeklyData.map((week) => (
                 <div
                   key={week.label}
-                  className="bg-white p-3 border border-gray-200 rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg mb-6"
+                  className="bg-white/90 p-3 border border-gray-200 rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg mb-6"
                 >
                   <h3 className="font-bold text-xl mb-3 border-b pb-2 text-green-700 text-center">
                     {week.label}
@@ -195,9 +198,9 @@ const getSuccessRate = (days) => {
                         {habitsList.map((habit, idx) => (
                           <tr
                             key={idx}
-                            className="bg-white hover:bg-gray-50 transition-colors"
+                            className="bg-white/90 hover:bg-gray-50 transition-colors"
                           >
-                            <td className="p-3 border sticky left-0 bg-white font-medium text-sm text-left z-0">
+                            <td className="p-3 border sticky left-0 bg-white/90 font-medium text-sm text-left z-0">
                               {habit}
                             </td>
                             {week.days.map((day, i) => {
@@ -236,11 +239,11 @@ const getSuccessRate = (days) => {
               Belum ada data bulanan yang tercatat.
             </p>
           ) : (
-            <div className="max-w-lg mx-auto space-y-6">
+            <div className="space-y-6">
               {monthlyData.map((month) => (
                 <div
                   key={month.label}
-                  className="bg-white p-3 border border-gray-200 rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg mb-6"
+                  className="bg-white/90 p-3 border border-gray-200 rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg mb-6"
                 >
                   <h3 className="font-bold text-xl mb-3 border-b pb-2 text-green-700 text-center">
                     {month.label}
@@ -270,9 +273,9 @@ const getSuccessRate = (days) => {
                         {habitsList.map((habit, idx) => (
                           <tr
                             key={idx}
-                            className="bg-white hover:bg-gray-50 transition-colors"
+                            className="bg-white/90 hover:bg-gray-50 transition-colors"
                           >
-                            <td className="p-3 border sticky left-0 bg-white font-medium text-sm text-left z-0">
+                            <td className="p-3 border sticky left-0 bg-white/90 font-medium text-sm text-left z-0">
                               {habit}
                             </td>
                             {month.days.map((day, i) => {

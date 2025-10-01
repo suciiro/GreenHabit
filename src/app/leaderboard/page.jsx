@@ -1,4 +1,5 @@
 "use client"
+import Background from '@/components/background'
 import Header from '@/components/header'
 import { useState, useEffect, useCallback } from 'react'
 
@@ -115,9 +116,10 @@ export default function Leaderboard() {
     return (
     <div>
         <Header />
-        <div className="p-4 max-w-lg mx-auto">
+        <Background />
+        <div className="mt-18 p-4 max-w-lg mx-auto relative z-10">
             <h2 className="text-2xl font-bold mb-4 text-center">
-                Papan Skor Dampak
+                Yuk Jadi yang Teratas!
             </h2>
             <p className="text-center text-sm text-green-600 mb-6">
                 Skor total dihitung: (CO₂ x {WEIGHTS.CO2}) + (Sampah x {WEIGHTS.SAMPAH}) + (Air x {WEIGHTS.AIR})
@@ -130,7 +132,7 @@ export default function Leaderboard() {
                         // Gaya Card yang Konsisten (diwarnai hijau jika pengguna lokal)
                         <div 
                             key={entry.nickname}
-                            className={`p-3 border rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg flex items-center justify-between ${isLocalUser ? 'bg-green-50 border-green-300' : 'bg-white border-gray-200'}`}
+                            className={`p-3 border rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg flex items-center justify-between ${isLocalUser ? 'bg-green-50 border-green-300' : 'bg-white/90 border-gray-200'}`}
                         >
                             {/* Kolom Kiri: Rank */}
                             <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center text-lg flex-shrink-0 ${getRankStyle(entry.rank, isLocalUser)}`}>
