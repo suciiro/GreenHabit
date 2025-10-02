@@ -14,7 +14,7 @@ export default function Background () {
                 fill
                 // object-cover memastikan gambar mengisi seluruh wadah tanpa distorsi
                 className="object-cover w-full h-full" 
-                quality={80}
+                quality={100}
                 priority={true} 
             />
         </div>

@@ -1,8 +1,10 @@
 'use client'
+
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import Image from "next/image";
 import Link from "next/link";
+
 
 export default function HomePage() {
   return (
@@ -22,7 +24,7 @@ export default function HomePage() {
             alt="Gadis memegang globe bumi sebagai latar belakang mobile"
             fill
             className="object-cover object-right z-0 md:hidden" // Tampil di mobile, Sembunyi di desktop
-            quality={80}
+            quality={100}
             priority={true} 
           />
           
@@ -32,7 +34,7 @@ export default function HomePage() {
             alt="Gadis memegang globe bumi sebagai latar belakang desktop"
             fill
             className="object-cover z-0 hidden md:block" // Sembunyi di mobile, Tampil di desktop
-            quality={80}
+            quality={100}
             priority={true} 
           />
 

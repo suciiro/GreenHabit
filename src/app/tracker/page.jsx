@@ -141,7 +141,7 @@ savedTracker = Object.fromEntries(
     <Header />
     <Background />
     <Footer />
-    <div className="mt-18 p-4 max-w-lg mx-auto relative z-10"> 
+    <div className="mt-18 mb-12 p-4 max-w-lg mx-auto relative z-10"> 
       <h2 className="text-2xl font-bold mb-4 text-center">
          Lacak Aksi Hijaumu!
       </h2>

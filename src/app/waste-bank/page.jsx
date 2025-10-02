@@ -34,7 +34,7 @@ export default function WasteBankPage() {
       <Background />
       <Footer />
       {/* Perubahan di sini: max-w-lg untuk mobile, md:max-w-6xl untuk desktop */}
-      <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
+      <div className="mt-18 mb-12 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
         <h2 className="text-2xl font-bold mb-4 text-center">
           Peta Bank Sampah
         </h2>

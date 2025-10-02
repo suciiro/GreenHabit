@@ -130,7 +130,7 @@ export default function Summary() {
       <Header />
       <Background />
       <Footer />
-      <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
+      <div className="mt-18 mb-12 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
         <h2 className="text-2xl font-bold mb-4 text-center">
           Ringkasan {viewMode === "weekly" ? "Mingguan" : "Bulanan"}
         </h2>
@@ -202,7 +202,7 @@ export default function Summary() {
                             key={idx}
                             className="bg-white/90 hover:bg-gray-50 transition-colors"
                           >
-                            <td className="p-3 border sticky left-0 bg-white/90 font-medium text-sm text-left z-0">
+                            <td className="p-3 border sticky left-0 bg-white font-medium text-sm text-left z-0">
                               {habit}
                             </td>
                             {week.days.map((day, i) => {
@@ -245,7 +245,7 @@ export default function Summary() {
               {monthlyData.map((month) => (
                 <div
                   key={month.label}
-                  className="bg-white/90 p-3 border border-gray-200 rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg mb-6"
+                  className="bg-white p-3 border border-gray-200 rounded-xl shadow-sm transition-shadow duration-200 hover:shadow-lg mb-6"
                 >
                   <h3 className="font-bold text-xl mb-3 border-b pb-2 text-green-700 text-center">
                     {month.label}
@@ -277,7 +277,7 @@ export default function Summary() {
                             key={idx}
                             className="bg-white/90 hover:bg-gray-50 transition-colors"
                           >
-                            <td className="p-3 border sticky left-0 bg-white/90 font-medium text-sm text-left z-0">
+                            <td className="p-3 border sticky left-0 bg-white font-medium text-sm text-left z-0">
                               {habit}
                             </td>
                             {month.days.map((day, i) => {

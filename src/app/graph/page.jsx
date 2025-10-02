@@ -143,7 +143,7 @@ export default function HabitChart() {
       <Footer />
 
       {/* Perubahan pada div ini: Menambahkan md:max-w-6xl untuk lebar desktop */}
-      <div className="mt-18 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
+      <div className="mt-18 mb-12 p-4 max-w-lg md:max-w-6xl mx-auto relative z-10">
 
         {/* Judul di luar card */}
         <h3 className="text-2xl font-bold mb-4 text-center">
